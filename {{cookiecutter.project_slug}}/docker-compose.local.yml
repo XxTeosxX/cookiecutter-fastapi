@@ -1,0 +1,55 @@
+name: {{ cookiecutter.project_slug }}_local
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: ./compose/local/fastapi/Dockerfile
+    image: {{ cookiecutter.project_slug }}_local_fastapi
+    container_name: {{ cookiecutter.project_slug }}_local_fastapi
+    {%- if cookiecutter.use_postgresql == 'y' %}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    {%- endif %}
+    volumes:
+      - .:/app:z
+    env_file:
+      - path: ./.env
+        required: false
+    {%- if cookiecutter.use_postgresql == 'y' %}
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: {{ cookiecutter.project_slug }}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    {%- endif %}
+    ports:
+      - "8000:8000"
+    command: /start
+
+  {%- if cookiecutter.use_postgresql == 'y' %}
+  postgres:
+    image: postgres:{{ cookiecutter.postgresql_version }}-alpine
+    container_name: {{ cookiecutter.project_slug }}_local_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: {{ cookiecutter.project_slug }}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d {{ cookiecutter.project_slug }}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  {%- endif %}
+
+{%- if cookiecutter.use_postgresql == 'y' %}
+
+volumes:
+  postgres_data: {}
+{%- endif %}

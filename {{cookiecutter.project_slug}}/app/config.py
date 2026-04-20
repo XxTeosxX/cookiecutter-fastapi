@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "{{ cookiecutter.project_name }}"
     VERSION: str = "{{ cookiecutter.version }}"
     DEBUG: bool = False
+{%- if cookiecutter.use_postgresql == 'y' %}
+    DATABASE_URL: str | None = None
+{%- endif %}
 
 
 settings = Settings()

@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    {%- if cookiecutter.use_postgresql == 'y' %}
+    services:
+      postgres:
+        image: postgres:{{ cookiecutter.postgresql_version }}-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/test_db
+    {%- endif %}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "{{ cookiecutter.python_version }}"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      {%- if cookiecutter.use_postgresql == 'y' %}
+      - name: Run migrations
+        run: uv run alembic upgrade head
+      {%- endif %}
+
+      - name: Pytest
+        run: uv run pytest

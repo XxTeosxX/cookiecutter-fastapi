@@ -7,8 +7,9 @@
   "version": "0.1.0",
   "python_version": ["3.12", "3.13"],
   "use_docker": ["y", "n"],
-  "use_postgresql": ["y", "n"],
-  "use_opentelemetry": ["y", "n"],
+  "use_postgresql": ["n", "y"],
+  "postgresql_version": ["18", "17", "16"],
+  "use_opentelemetry": ["n", "y"],
   "ci_tool": ["GitHub", "None"],
   "open_source_license": ["MIT", "BSD", "GPLv3", "Apache Software License 2.0", "Not open source"]
 }

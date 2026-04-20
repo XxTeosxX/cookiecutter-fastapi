@@ -1,0 +1,50 @@
+# Ajuste .env.production antes do deploy — defina POSTGRES_PASSWORD, SECRET_KEY, etc.
+name: {{ cookiecutter.project_slug }}_production
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: ./compose/production/fastapi/Dockerfile
+    image: {{ cookiecutter.project_slug }}_production_fastapi
+    container_name: {{ cookiecutter.project_slug }}_production_fastapi
+    restart: unless-stopped
+    {%- if cookiecutter.use_postgresql == 'y' %}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    {%- endif %}
+    env_file:
+      - path: ./.env.production
+        required: false
+    ports:
+      - "8000:8000"
+    command: /start
+
+  {%- if cookiecutter.use_postgresql == 'y' %}
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: {{ cookiecutter.project_slug }}_production_postgres
+    container_name: {{ cookiecutter.project_slug }}_production_postgres
+    restart: unless-stopped
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data
+      - production_postgres_data_backups:/backups
+    env_file:
+      - path: ./.env.production
+        required: false
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  {%- endif %}
+
+{%- if cookiecutter.use_postgresql == 'y' %}
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+{%- endif %}
