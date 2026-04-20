@@ -1,11 +1,11 @@
 import logging
 import time
 import uuid
+
+from fastapi import Request
 {%- if cookiecutter.use_opentelemetry == 'y' %}
 from opentelemetry.trace import get_current_span
 {%- endif %}
-
-from fastapi import Request
 
 logger = logging.getLogger("app.request")
 
