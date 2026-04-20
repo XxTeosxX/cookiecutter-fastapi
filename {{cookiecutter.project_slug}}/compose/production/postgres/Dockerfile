@@ -1,4 +1,4 @@
-FROM postgres:{{ cookiecutter.postgresql_version }}-alpine
+FROM postgres:18-alpine
 
 COPY ./compose/production/postgres/maintenance /usr/local/bin/maintenance
 RUN chmod +x /usr/local/bin/maintenance/* \

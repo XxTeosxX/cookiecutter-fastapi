@@ -166,14 +166,14 @@ def test_ci_tool_assets(rendered, combo: Combo) -> None:
         )
 
 
-# -------------------- postgresql_version non-contamination --------------------
+# -------------------- postgresql image presence --------------------
 
 
-def test_postgresql_version_rendering(rendered, combo: Combo) -> None:
-    """When use_postgresql=y, selected version appears in docker-compose.
-    When use_postgresql=n, no `postgres:<version>` string appears anywhere."""
+def test_postgresql_image_rendering(rendered, combo: Combo) -> None:
+    """When use_postgresql=y, postgres:18 appears in docker-compose.
+    When use_postgresql=n, no postgres image reference appears anywhere."""
     root = Path(rendered.project_path)
-    token = f"postgres:{combo.postgresql_version}"
+    token = "postgres:18"
 
     if combo.use_postgresql == "y":
         compose = _read(root / "docker-compose.local.yml")
@@ -181,12 +181,11 @@ def test_postgresql_version_rendering(rendered, combo: Combo) -> None:
             f"{combo.id}: docker-compose.local.yml must reference {token}"
         )
     else:
-        # Cross-variable non-contamination: pg version must NOT leak anywhere.
         for p in _iter_rendered_files(root):
             try:
                 text = p.read_text(encoding="utf-8")
             except (UnicodeDecodeError, OSError):
-                continue  # binary file, skip
+                continue
             assert token not in text, (
                 f"{combo.id}: {p.relative_to(root)} leaked '{token}' "
                 f"despite use_postgresql=n"

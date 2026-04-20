@@ -10,7 +10,7 @@ jobs:
     {%- if cookiecutter.use_postgresql == 'y' %}
     services:
       postgres:
-        image: postgres:{{ cookiecutter.postgresql_version }}-alpine
+        image: postgres:18-alpine
         env:
           POSTGRES_DB: test_db
           POSTGRES_USER: postgres

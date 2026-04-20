@@ -1,4 +1,4 @@
-# Ajuste .env.production antes do deploy — defina POSTGRES_PASSWORD, SECRET_KEY, etc.
+# Update .env.production before deploying — set POSTGRES_PASSWORD, SECRET_KEY, etc.
 name: {{ cookiecutter.project_slug }}_production
 
 services:
