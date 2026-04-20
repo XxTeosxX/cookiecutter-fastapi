@@ -9,8 +9,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pre-commit>=3.8.0",
     "pytest>=8.0.0",
     "pytest-cookies>=0.7.0",
+    "pytest-xdist>=3.5.0",
 ]
 
 [tool.ruff]
@@ -19,3 +21,7 @@ line-length = 88
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-n auto -ra --strict-markers"
+markers = [
+    "smoke: runs uv sync + ruff + pytest inside rendered project (slow)",
+]
