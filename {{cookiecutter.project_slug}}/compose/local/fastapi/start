@@ -9,7 +9,7 @@ alembic upgrade head
 {%- endif %}
 
 {%- if cookiecutter.use_opentelemetry == 'y' %}
-exec opentelemetry-instrument uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+exec opentelemetry-instrument uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level warning
 {%- else %}
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level warning
 {%- endif %}
