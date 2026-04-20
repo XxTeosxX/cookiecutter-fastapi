@@ -4,37 +4,63 @@
 
 Optional features: Docker, PostgreSQL + SQLAlchemy + Alembic, OpenTelemetry, GitHub Actions CI.
 
-## Quick-start
+## Usage
 
-### Prerequisites
+Let's pretend you want to create a FastAPI project called "reddit clone". Rather than setting up the project structure from scratch, wiring up PostgreSQL, configuring Docker, and forgetting half the things until the worst possible moment, get Cookiecutter to do all the work.
 
-- [uv](https://docs.astral.sh/uv/) (recommended) or `pip install cookiecutter`
-- Docker + Docker Compose (if you select `use_docker=y`)
+First, get Cookiecutter. Trust me, it's awesome:
 
-### Scaffold a project
+    uv tool install "cookiecutter>=1.7.0"
 
-```bash
-uvx cookiecutter gh:xxteosxx/cookiecutter-fastapi
-```
+Now run it against this repo:
 
-Answer the prompts, then:
+    uvx cookiecutter https://github.com/xxteosxx/cookiecutter-fastapi
 
-```bash
-cd <your-project-slug>
+You'll be prompted for some values. Provide them, then a FastAPI project will be created for you.
 
-# With Docker (default):
-docker compose -f docker-compose.local.yml up
+**Warning**: After this point, change 'My FastAPI Project' to your project name, 'Your Name' to your name, and so on.
 
-# Without Docker:
-uv sync
-uv run uvicorn app.main:app --reload
-```
+Answer the prompts with your own desired [options](https://cookiecutter-fastapi.readthedocs.io/en/latest/project-generation-options.html). For example:
 
-Your API is now running at `http://localhost:8000`. Check the health endpoint:
+    project_name [My FastAPI Project]: Reddit Clone
+    project_slug [reddit_clone]: reddit
+    description [A production-ready FastAPI project]: A Reddit-like API built with FastAPI
+    author_name [Your Name]: Daniel Roy Greenfeld
+    email [daniel.roy.greenfeld@example.com]: daniel@example.com
+    version [0.1.0]: 0.0.1
+    Select python_version:
+    1 - 3.12
+    2 - 3.13
+    Choose from 1, 2 [1]: 1
+    use_docker [y]: y
+    use_postgresql [n]: y
+    use_opentelemetry [n]: n
+    Select ci_tool:
+    1 - GitHub
+    2 - None
+    Choose from 1, 2 [1]: 1
+    Select open_source_license:
+    1 - MIT
+    2 - BSD
+    3 - GPLv3
+    4 - Apache Software License 2.0
+    5 - Not open source
+    Choose from 1, 2, 3, 4, 5 [1]: 1
 
-```bash
-curl http://localhost:8000/health
-```
+Enter the project and take a look around:
+
+    cd reddit/
+    ls
+
+Create a git repo and push it there:
+
+    git init
+    git add .
+    git commit -m "first awesome commit"
+    git remote add origin git@github.com:danielroygreenfeld/reddit.git
+    git push -u origin main
+
+Now take a look at your repo. Don't forget to carefully look at the generated README. Awesome, right?
 
 ## Features
 
@@ -59,8 +85,7 @@ curl http://localhost:8000/health
 | `version` | `0.1.0` | PEP 440 | Initial project version |
 | `python_version` | `3.12` | `3.12`, `3.13` | Minimum Python version |
 | `use_docker` | `y` | `y`, `n` | Include Docker + docker-compose stacks |
-| `use_postgresql` | `n` | `n`, `y` | Include PostgreSQL + SQLAlchemy + Alembic |
-| `postgresql_version` | `18` | `18`, `17`, `16` | PostgreSQL image version *(only used when `use_postgresql=y`)* |
+| `use_postgresql` | `n` | `n`, `y` | Include PostgreSQL + SQLAlchemy + Alembic (uses PostgreSQL 18) |
 | `use_opentelemetry` | `n` | `n`, `y` | Include OpenTelemetry tracing + structured logging |
 | `ci_tool` | `GitHub` | `GitHub`, `None` | CI/CD platform (creates `.github/workflows/ci.yml`) |
 | `open_source_license` | `MIT` | `MIT`, `BSD`, `GPLv3`, `Apache Software License 2.0`, `Not open source` | Project license |
@@ -137,6 +162,10 @@ uv run pytest
 3. Update `hooks/post_gen_project.py` if unused files need cleanup.
 4. Add render assertions to `tests/test_render_matrix.py`.
 5. Run the full test suite to verify all 24 matrix combos still pass.
+
+## Acknowledgments
+
+Inspired by [cookiecutter-django](https://github.com/cookiecutter/cookiecutter-django) — the gold standard for cookiecutter templates. Many structural and workflow decisions in this project were modeled after their approach.
 
 ## License
 
