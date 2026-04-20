@@ -1,0 +1,14 @@
+{
+  "project_name": "My FastAPI Project",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "description": "A production-ready FastAPI project",
+  "author_name": "Your Name",
+  "email": "{{ cookiecutter.author_name.lower().replace(' ', '.') }}@example.com",
+  "version": "0.1.0",
+  "python_version": ["3.12", "3.13"],
+  "use_docker": ["y", "n"],
+  "use_postgresql": ["y", "n"],
+  "use_opentelemetry": ["y", "n"],
+  "ci_tool": ["GitHub", "None"],
+  "open_source_license": ["MIT", "BSD", "GPLv3", "Apache Software License 2.0", "Not open source"]
+}
