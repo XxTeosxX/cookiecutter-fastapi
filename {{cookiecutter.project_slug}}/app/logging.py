@@ -19,6 +19,7 @@ LOGGING_CONFIG: dict = {
             "()": "pythonjsonlogger.json.JsonFormatter",
             "fmt": "%(asctime)s %(levelname)s %(name)s %(message)s",
             "rename_fields": {"asctime": "timestamp", "levelname": "level"},
+            "reserved_attrs": ["color_message"],
         },
     },
     "handlers": {
