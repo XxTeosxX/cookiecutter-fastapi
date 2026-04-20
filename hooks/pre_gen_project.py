@@ -1,9 +1,7 @@
 """Pre-generation hook: validates cookiecutter variables before project creation.
 
-Cookiecutter natively validates choice variables (lists in cookiecutter.json) such as
-use_postgresql, postgresql_version, use_docker, python_version, ci_tool. This hook
-focuses on what cookiecutter does NOT cover: free-text strings and cross-variable
-combinations.
+Validates free-text strings (project_slug, version), boolean y/n inputs,
+and cross-variable combinations.
 """
 
 import re
@@ -15,6 +13,7 @@ project_slug = "{{ cookiecutter.project_slug }}"
 version = "{{ cookiecutter.version }}"
 use_postgresql = "{{ cookiecutter.use_postgresql }}"
 use_docker = "{{ cookiecutter.use_docker }}"
+use_opentelemetry = "{{ cookiecutter.use_opentelemetry }}"
 
 
 def validate_project_slug():
@@ -33,6 +32,17 @@ def validate_version():
         sys.exit(1)
 
 
+def validate_yn_flags():
+    for name, value in [
+        ("use_docker", use_docker),
+        ("use_postgresql", use_postgresql),
+        ("use_opentelemetry", use_opentelemetry),
+    ]:
+        if value not in ("y", "n"):
+            print(f"ERROR: '{name}' must be 'y' or 'n', got '{value}'.")
+            sys.exit(1)
+
+
 def warn_postgres_without_docker():
     if use_postgresql == "y" and use_docker == "n":
         print(
@@ -47,4 +57,5 @@ def warn_postgres_without_docker():
 if __name__ == "__main__":
     validate_project_slug()
     validate_version()
+    validate_yn_flags()
     warn_postgres_without_docker()
