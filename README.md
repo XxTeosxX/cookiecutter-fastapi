@@ -14,7 +14,7 @@ Optional features: Docker, PostgreSQL + SQLAlchemy + Alembic, OpenTelemetry, Git
 ### Scaffold a project
 
 ```bash
-uvx cookiecutter gh:cookiecutter/cookiecutter-fastapi
+uvx cookiecutter gh:xxteosxx/cookiecutter-fastapi
 ```
 
 Answer the prompts, then:
@@ -111,7 +111,7 @@ Single-worker deployments (the default Docker stack) are unaffected.
 ### Setup
 
 ```bash
-git clone https://github.com/cookiecutter/cookiecutter-fastapi
+git clone https://github.com/xxteosxx/cookiecutter-fastapi
 cd cookiecutter-fastapi
 uv sync
 pre-commit install
