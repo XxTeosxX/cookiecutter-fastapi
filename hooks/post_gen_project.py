@@ -49,14 +49,24 @@ def cleanup_ci_tool() -> None:
 
 
 def generate_env_file() -> None:
-    """Generate .env with a fresh SECRET_KEY.
+    """Generate .env with a fresh SECRET_KEY and feature-specific defaults."""
+    lines = [f"SECRET_KEY={secrets.token_urlsafe(50)}\n"]
 
-    .env is gitignored (see .gitignore). Users add a SECRET_KEY field to
-    app/config.py when they need it (JWT signing, session cookies, etc.).
-    Convention mirrors cookiecutter-django's SECRET_KEY generation.
-    """
+    if USE_OPENTELEMETRY:
+        lines += [
+            "\n",
+            "# OpenTelemetry\n",
+            "OTEL_SERVICE_NAME={{ cookiecutter.project_slug }}\n",
+            "OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318\n",
+            "OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf\n",
+            "OTEL_TRACES_EXPORTER=otlp_proto_http\n",
+            "OTEL_METRICS_EXPORTER=none\n",
+            "OTEL_LOGS_EXPORTER=none\n",
+            "OTEL_RESOURCE_ATTRIBUTES=service.version={{ cookiecutter.version }},deployment.environment=local\n",
+        ]
+
     with open(".env", "w", encoding="utf-8") as f:
-        f.write(f"SECRET_KEY={secrets.token_urlsafe(50)}\n")
+        f.writelines(lines)
 
 
 def generate_uv_lock() -> None:
